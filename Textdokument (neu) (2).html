@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fragen und Video</title>
+    <style>
+        /* Körper und HTML für volle Höhe und ohne Scrollen */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Stile für den Quiz-Container */
+        #quizContainer {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Stile für das Video-Container */
+        #videoContainer {
+            position: fixed; /* Video bleibt über dem gesamten Inhalt */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            display: none; /* Video wird erst angezeigt, wenn das Quiz beendet ist */
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Einfaches Styling für die Fragen und den Button */
+        #quizContainer label, #quizContainer button {
+            font-size: 20px;
+            margin: 20px;
+        }
+
+        /* Der Button für das Bestätigen der Antwort */
+        #nextButton {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Quiz Container -->
+    <div id="quizContainer">
+        <div id="questionSection"></div>
+        <button id="nextButton" onclick="nextQuestion()">Antwort bestätigen</button>
+    </div>
+
+    <!-- Video Container -->
+    <div id="videoContainer">
+        <video id="video" autoplay muted loop>
+            <source src="0.mp4" type="video/mp4">
+            Dein Browser unterstützt das Video-Tag nicht.
+        </video>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "Was ist die Hauptstadt von Deutschland?", answer: "Berlin" },
+            { question: "Wie viele Kontinente gibt es auf der Erde?", answer: "7" },
+            { question: "Was ist der längste Fluss der Welt?", answer: "Amazonas" },
+            { question: "Wie viele Planeten gibt es in unserem Sonnensystem?", answer: "8" },
+            { question: "In welchem Jahr landeten die ersten Menschen auf dem Mond?", answer: "1969" },
+            { question: "Wer malte das Bild 'Die Mona Lisa'?", answer: "Leonardo da Vinci" },
+            { question: "Welches Element hat das chemische Symbol 'O'?", answer: "Sauerstoff" },
+            { question: "Was ist der höchste Berg der Welt?", answer: "Mount Everest" },
+            { question: "Welches Land hat die größte Bevölkerung?", answer: "China" },
+            { question: "Wie viele Farben hat der Regenbogen?", answer: "7" }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function loadQuestion(index) {
+            const questionSection = document.getElementById("questionSection");
+            questionSection.innerHTML = ""; // Reset Section
+
+            const questionText = document.createElement("label");
+            questionText.textContent = `${index + 1}. ${questions[index].question}`;
+            questionSection.appendChild(questionText);
+
+            const inputField = document.createElement("input");
+            inputField.type = "text";
+            inputField.id = `q${index}`;
+            questionSection.appendChild(inputField);
+
+            document.getElementById("nextButton").style.display = "inline-block";
+        }
+
+        function nextQuestion() {
+            const userAnswer = document.getElementById(`q${currentQuestionIndex}`).value.trim().toLowerCase();
+            const correctAnswer = questions[currentQuestionIndex].answer.toLowerCase();
+
+            if (userAnswer === correctAnswer) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion(currentQuestionIndex);
+            } else {
+                showVideo();
+            }
+        }
+
+        function showVideo() {
+            const quizContainer = document.getElementById("quizContainer");
+            quizContainer.style.display = "none"; // Verstecke das Quiz
+
+            const videoContainer = document.getElementById("videoContainer");
+            videoContainer.style.display = "block"; // Zeige das Video
+        }
+
+        // Start der ersten Frage laden
+        loadQuestion(currentQuestionIndex);
+    </script>
+
+</body>
+</html>
